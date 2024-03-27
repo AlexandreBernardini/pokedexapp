@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import PokemonCard from '../../components/PokemonCard/pokemonCard';
 import useGetAsyncStoragePokemons from '../../services/GetAsyncStoragePokemon/useGetAsyncStoragePokemon';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PokeTeam() {
     const { pokemonDetails } = useGetAsyncStoragePokemons();
+
+    const navigation = useNavigation();
 
     return (
         <ScrollView>

@@ -1,7 +1,7 @@
 // show.tsx
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Button} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Button } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import useGetPokemon from '../../services/getOnePokemon/useGetOnePokemon';
 import useGetOnePokemonEvolutions from "../../services/getOnePokemonEvolutions/useGetOnePokemonEvolutions";
 import useGetOnePokemonPreEvolutions from "../../services/getOnePokemonPreEvolutions/useGetOnePokemonPreEvolutions";
@@ -29,12 +29,12 @@ export default function Show() {
     const route = useRoute();
     const params = route.params;
     const pokemonId = params && typeof params === 'object' && 'pokemonId' in params && typeof params.pokemonId === 'number' ? params.pokemonId : null;
-    const {addItemToAsyncStorage, clearAllData} = useAsyncStorage();
+    const { addItemToAsyncStorage, clearAllData } = useAsyncStorage();
 
     const navigation = useNavigation();
 
     const handlePress = (evolutionId: number) => {
-        navigation.navigate('Show', {pokemonId: evolutionId});
+        navigation.navigate('Show', { pokemonId: evolutionId });
     };
 
     if (!pokemonId) {
@@ -45,7 +45,7 @@ export default function Show() {
         );
     }
 
-    const {pokemon, loading} = useGetPokemon(pokemonId);
+    const { pokemon, loading } = useGetPokemon(pokemonId);
     const [evolution, setEvolution] = useState<Evolution | null>(null);
     const [preEvolution, setPreEvolution] = useState<PreEvolution | null>(null);
 
@@ -75,6 +75,10 @@ export default function Show() {
         fetchPokemonPreEvolution();
     }, [pokemon]);
 
+    const NavigatePokeBall = () => {
+        navigation.navigate('PokeBall', { pokemonId: pokemon.id });
+    };
+
     if (loading) {
         return (
             <View style={styles.container}>
@@ -93,31 +97,34 @@ export default function Show() {
 
     return (
         <ScrollView>
+            <TouchableOpacity style={styles.button} onPress={NavigatePokeBall}>
+                <Text style={styles.buttonText}>Lancez</Text>
+            </TouchableOpacity>
             <View style={styles.textApi}>
                 <Text style={styles.name}>{pokemon.name}</Text>
                 <View style={styles.cardTypes}>
                     {pokemon.apiTypes.map((type, index) => (
-                        <Image key={index} style={styles.typeImage} source={{uri: type.image}}/>
+                        <Image key={index} style={styles.typeImage} source={{ uri: type.image }} />
                     ))}
                 </View>
             </View>
             <View style={styles.container}>
                 <View style={styles.pokemonsList}>
                     <View style={styles.mainPokemon}>
-                        <Image style={styles.image} source={{uri: pokemon.image}}/>
+                        <Image style={styles.image} source={{ uri: pokemon.image }} />
                     </View>
                     <View style={styles.pokemonEvoContainer}>
                         {preEvolution && (
                             <TouchableOpacity onPress={() => handlePress(preEvolution.id)}>
                                 <View style={styles.evolutionContainer}>
-                                    <Image style={styles.evolutionImage} source={{uri: preEvolution.image}}/>
+                                    <Image style={styles.evolutionImage} source={{ uri: preEvolution.image }} />
                                 </View>
                             </TouchableOpacity>
                         )}
                         {evolution && (
                             <TouchableOpacity onPress={() => handlePress(evolution.id)}>
                                 <View style={styles.evolutionContainer}>
-                                    <Image style={styles.evolutionImage} source={{uri: evolution.image}}/>
+                                    <Image style={styles.evolutionImage} source={{ uri: evolution.image }} />
                                 </View>
                             </TouchableOpacity>
                         )}
@@ -132,8 +139,8 @@ export default function Show() {
                     <Text style={styles.stat}>Special Defense: {pokemon.stats.special_defense}</Text>
                     <Text style={styles.stat}>Speed: {pokemon.stats.speed}</Text>
                 </View>
-                <Button title={'Add on team'} onPress={() => addItemToAsyncStorage(pokemonId)}/>
-                <Button title={'Clear all data'} onPress={clearAllData}/>
+                <Button title={'Add on team'} onPress={() => addItemToAsyncStorage(pokemonId)} />
+                <Button title={'Clear all data'} onPress={clearAllData} />
 
             </View>
         </ScrollView>
@@ -151,6 +158,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+
+    button: {
+        backgroundColor: 'blue',
+        padding: 10,
+        margin: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
     },
     name: {
         fontSize: 40,
